@@ -24,7 +24,7 @@ class GreatPlaces with ChangeNotifier {
       {
         'id': newPlace.id,
         'title': newPlace.title,
-        'image': newPlace.image,
+        'image': newPlace.image.path,
       },
     );
   }
