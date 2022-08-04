@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 
+import '../helpers/location_helper.dart';
+
 class LocationInput extends StatefulWidget {
   @override
   _LocationState createState() => _LocationState();
@@ -13,8 +15,13 @@ class _LocationState extends State<LocationInput> {
     //byfault when we call this method on a android simulator
     //we get the google offices location
     final locData = await Location().getLocation();
-    print(locData.latitude);
-    print(locData.altitude);
+    final staticMapImageUrl = LocationHelper.generateLocationPreviewImage(
+      latitude: locData.latitude!,
+      longitude: locData.longitude!,
+    );
+    setState(() {
+      _previewImageUlr = staticMapImageUrl;
+    });
   }
 
   @override
