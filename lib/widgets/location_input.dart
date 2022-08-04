@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
 import '../helpers/location_helper.dart';
@@ -26,7 +27,7 @@ class _LocationState extends State<LocationInput> {
   }
 
   Future<void> _selectOnMap() async {
-    final selectedLocation = await Navigator.of(context).push(
+    final LatLng selectedLocation = await Navigator.of(context).push(
       MaterialPageRoute(
         //this change the open animation and change a close button
         fullscreenDialog: true,
@@ -38,6 +39,7 @@ class _LocationState extends State<LocationInput> {
     if (selectedLocation == null) {
       return;
     }
+    print(selectedLocation);
   }
 
   @override

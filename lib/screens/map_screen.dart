@@ -19,11 +19,31 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
+  var _pickedLocation;
+
+  void _selectLocation(LatLng position) {
+    setState(() {
+      _pickedLocation = position;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Your map'),
+        actions: [
+          if (widget.isSelecting)
+            IconButton(
+              icon: Icon(Icons.check),
+              onPressed: _pickedLocation == null
+                  //assign null as callback to a button automatically disable it
+                  ? null
+                  : () {
+                      Navigator.of(context).pop(_pickedLocation);
+                    },
+            ),
+        ],
       ),
       //GoogleMap asummes the width and height of the pared widget
       body: GoogleMap(
@@ -34,6 +54,17 @@ class _MapScreenState extends State<MapScreen> {
           ),
           zoom: 16,
         ),
+        //is like if we are callin _slectLocation with the position taped as
+        //argument
+        onTap: widget.isSelecting ? _selectLocation : null,
+        markers: _pickedLocation == null
+            ? {}
+            : {
+                Marker(
+                  markerId: MarkerId('m1'),
+                  position: _pickedLocation,
+                ),
+              },
       ),
     );
   }
