@@ -6,6 +6,10 @@ import '../helpers/location_helper.dart';
 import '../screens/map_screen.dart';
 
 class LocationInput extends StatefulWidget {
+  //we add this to be able to pass data from child to parent widget
+  final Function onSelectPlace;
+  LocationInput(this.onSelectPlace);
+
   @override
   _LocationState createState() => _LocationState();
 }
@@ -13,17 +17,26 @@ class LocationInput extends StatefulWidget {
 class _LocationState extends State<LocationInput> {
   String _previewImageUlr = '';
 
-  Future<void> _getCurrentUserLocation() async {
-    //byfault when we call this method on a android simulator
-    //we get the google offices location
-    final locData = await Location().getLocation();
+  void _showPreview(double lat, double lng) {
     final staticMapImageUrl = LocationHelper.generateLocationPreviewImage(
-      latitude: locData.latitude!,
-      longitude: locData.longitude!,
+      latitude: lat,
+      longitude: lng,
     );
     setState(() {
       _previewImageUlr = staticMapImageUrl;
     });
+  }
+
+  Future<void> _getCurrentUserLocation() async {
+    //byfault when we call this method on a android simulator
+    //we get the google offices location
+    try {
+      final locData = await Location().getLocation();
+      _showPreview(locData.latitude!, locData.longitude!);
+      widget.onSelectPlace(locData.latitude, locData.longitude);
+    } catch (error) {
+      return;
+    }
   }
 
   Future<void> _selectOnMap() async {
@@ -39,7 +52,8 @@ class _LocationState extends State<LocationInput> {
     if (selectedLocation == null) {
       return;
     }
-    print(selectedLocation);
+    _showPreview(selectedLocation.latitude, selectedLocation.longitude);
+    widget.onSelectPlace(selectedLocation.latitude, selectedLocation.longitude);
   }
 
   @override
